@@ -7,31 +7,38 @@ public class AnagramSolver {
         List<String> dictionary = loadDictionary("dictionary.txt");
 
         if (dictionary.isEmpty()) {
-            System.out.println(" Error loading dictionary.");
+            System.out.println("Error loading dictionary.");
             return;
         }
 
+        Random random = new Random();
+
         while (true) {
-            System.out.print("\nEnter a word to find anagrams: ");
-            String input = scanner.nextLine().trim().toLowerCase();
+            // Pick a random word from the dictionary
+            String chosenWord = dictionary.get(random.nextInt(dictionary.size()));
+            System.out.println("\nFind anagrams for the word: " + chosenWord);
 
-            if (!input.matches("[a-z]+")) {
-                System.out.println("\n Invalid input! Please enter a valid word.");
-                continue;
-            }
+            // Get all valid anagrams of the chosen word (excluding the word itself)
+            List<String> validAnagrams = findAnagrams(chosenWord, dictionary);
 
-            List<String> anagrams = findAnagrams(input, dictionary);
+            System.out.print("Enter your anagram guess: ");
+            String userGuess = scanner.nextLine().trim().toLowerCase();
 
-            if (anagrams.isEmpty()) {
-                System.out.println("\n No anagrams found.");
+            if (!userGuess.matches("[a-z]+")) {
+                System.out.println("Invalid input! Please enter a valid word.");
+            } else if (userGuess.equals(chosenWord)) {
+                System.out.println("That's the original word. Try to find a different anagram.");
+            } else if (validAnagrams.contains(userGuess)) {
+                System.out.println(" Correct! '" + userGuess + "' is an anagram.");
             } else {
-                System.out.println("\n  Anagrams found: " + anagrams);
+                System.out.println(" Incorrect. That's not a valid anagram.");
+                System.out.println("Some valid anagrams were: " + validAnagrams);
             }
 
-            System.out.print("\n Do you want to try again? (yes/no): ");
+            System.out.print("\nDo you want to play again? (yes/no): ");
             String again = scanner.nextLine().toLowerCase();
             if (!again.equals("yes")) {
-                System.out.println("Thank you for using the Anagram Solver!");
+                System.out.println("Thank you for playing the Anagram Solver!");
                 break;
             }
         }
